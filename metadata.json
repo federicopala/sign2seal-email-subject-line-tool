@@ -1,0 +1,6 @@
+{
+  "name": "A/B Subject Line and Preview Text Generator",
+  "description": "Generate high-converting email subject lines and preview text A/B testing variants optimized for open rates based on email type, segment, and topic.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
