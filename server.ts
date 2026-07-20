@@ -85,7 +85,11 @@ async function startServer() {
 
   // API Routes FIRST
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", time: new Date().toISOString() });
+    res.json({ 
+      status: "ok", 
+      time: new Date().toISOString(),
+      hasGeminiKey: !!process.env.GEMINI_API_KEY
+    });
   });
 
   app.post("/api/generate", async (req, res) => {
@@ -171,6 +175,19 @@ Provide your response in JSON format matching the schema defined below.`;
       console.error("Generation error:", error);
       res.status(500).json({ error: error?.message || "An unexpected error occurred during copy generation." });
     }
+  });
+
+  // API 404 handler
+  app.use("/api/*", (req, res) => {
+    res.status(404).json({ error: `API route ${req.method} ${req.originalUrl} not found` });
+  });
+
+  // Global error handling middleware to ensure all server errors are returned as JSON
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error("Express global error handler caught:", err);
+    res.status(500).json({ 
+      error: err?.message || "An unexpected internal server error occurred." 
+    });
   });
 
   // Vite or Static files Middleware

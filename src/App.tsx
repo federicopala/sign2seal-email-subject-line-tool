@@ -179,8 +179,19 @@ export default function App() {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Generation request failed");
+        let errMsg = "Generation request failed";
+        try {
+          const errData = await response.json();
+          errMsg = errData.error || errMsg;
+        } catch {
+          try {
+            const rawText = await response.text();
+            if (rawText && rawText.length < 200) {
+              errMsg = rawText;
+            }
+          } catch {}
+        }
+        throw new Error(errMsg);
       }
 
       const data: GenerationResponse = await response.json();
